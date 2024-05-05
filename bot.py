@@ -6,31 +6,42 @@
     @github: @AdvancedAlgorithm
 """
 import discord
-
+from discord.ext import commands  
 class Config:
-    prefix = "-"
+    prefix = "&"
 
 class MyClient(discord.Client):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
 
     async def on_message(self, message):
-
-        data = message.content
-        cmd = data
+        print(f'Message from {message.author}: {message.content}')
+        msgdata = message.content
+        cmd = msgdata
         args = []
-        if not data.startswith(Config.prefix): return
-        if " " in data:
-            args = data.split(" ")
+        if not msgdata.startswith(Config.prefix): return
+        if " " in msgdata:
+            args = msgdata.split(" ")
             cmd = args[0]
 
-        if cmd == f"{Config.prefix}help":
+        if cmd == f"{Config.prefix}status":
             await message.channel.send("WORKING")
-        print(f'Message from {message.author}: {message.content}')
+        if cmd == f"{Config.prefix}ban" or cmd == f"{Config.prefix}Ban":
+            if message.author.guild_permissions.ban_members:
+                if len(message.mentions) == 0:
+                    await message.channel.send("Please Mention the specified member.")
+                else:
+                    member  = message.mentions[0]
+                    await member.ban(member)
+
+
+
+
+    
 
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = MyClient(intents=intents)
-client.run('MTIzNjA0MzgxMDM3MTI3NjgzMA.GAaz1l.Rsavj8et4rgwllDlHzFUQrJxAFq-OG4qGOrwG0')
+client = MyClient(intents=intents )
+client.run('MTIzNjA0MzgxMDM3MTI3NjgzMA.GOZKXC.jIE59Q0uyzQMWtGGPJeeHqVOeDpTNLp098Qa-A')
